@@ -8,7 +8,7 @@ const ses = new SESv2Client({
   },
 });
 
-const FROM = process.env.AWS_SES_FROM_EMAIL ?? "noreply@elitepool.app";
+const FROM = process.env.AWS_SES_FROM_EMAIL ?? "noreply@fwstasks.app";
 
 interface SendEmailOptions {
   to: string;

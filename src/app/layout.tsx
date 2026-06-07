@@ -17,11 +17,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ElitePool — Project & Task Collaboration",
-    template: "%s | ElitePool",
+    default: "fwsTasks — Project & Task Collaboration",
+    template: "%s | fwsTasks",
   },
   description:
     "Smart project and task collaboration system for teams. Manage projects, tasks, deadlines, and team workload with ease.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

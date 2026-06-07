@@ -10,44 +10,44 @@ async function main() {
   const password = await bcrypt.hash("demo1234", 12);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@elitepool.dev" },
+    where: { email: "admin@fwstasks.dev" },
     update: {},
     create: {
       name: "Alex Admin",
-      email: "admin@elitepool.dev",
+      email: "admin@fwstasks.dev",
       passwordHash: password,
       role: Role.ADMIN,
     },
   });
 
   const pm = await prisma.user.upsert({
-    where: { email: "pm@elitepool.dev" },
+    where: { email: "pm@fwstasks.dev" },
     update: {},
     create: {
       name: "Patricia Manager",
-      email: "pm@elitepool.dev",
+      email: "pm@fwstasks.dev",
       passwordHash: password,
       role: Role.PROJECT_MANAGER,
     },
   });
 
   const member1 = await prisma.user.upsert({
-    where: { email: "dev1@elitepool.dev" },
+    where: { email: "dev1@fwstasks.dev" },
     update: {},
     create: {
       name: "Sam Developer",
-      email: "dev1@elitepool.dev",
+      email: "dev1@fwstasks.dev",
       passwordHash: password,
       role: Role.TEAM_MEMBER,
     },
   });
 
   const member2 = await prisma.user.upsert({
-    where: { email: "dev2@elitepool.dev" },
+    where: { email: "dev2@fwstasks.dev" },
     update: {},
     create: {
       name: "Jordan Designer",
-      email: "dev2@elitepool.dev",
+      email: "dev2@fwstasks.dev",
       passwordHash: password,
       role: Role.TEAM_MEMBER,
     },
@@ -61,7 +61,7 @@ async function main() {
     update: {},
     create: {
       id: "seed-project-1",
-      name: "ElitePool Platform v2",
+      name: "fwsTasks Platform v2",
       description: "Complete redesign of the core platform with new collaboration features and improved performance.",
       deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       status: ProjectStatus.ACTIVE,
@@ -275,10 +275,10 @@ async function main() {
   console.log("✅ Activity logs created");
   console.log("\n🎉 Seed complete!");
   console.log("\n📋 Demo credentials (password: demo1234):");
-  console.log("  Admin:          admin@elitepool.dev");
-  console.log("  Project Manager: pm@elitepool.dev");
-  console.log("  Team Member:    dev1@elitepool.dev");
-  console.log("  Team Member:    dev2@elitepool.dev");
+  console.log("  Admin:          admin@fwstasks.dev");
+  console.log("  Project Manager: pm@fwstasks.dev");
+  console.log("  Team Member:    dev1@fwstasks.dev");
+  console.log("  Team Member:    dev2@fwstasks.dev");
 }
 
 main()

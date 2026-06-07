@@ -58,7 +58,7 @@ export default function SignupPage() {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary">
             <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">ElitePool</h1>
+          <h1 className="text-2xl font-bold tracking-tight">fwsTasks</h1>
           <p className="text-sm text-muted-foreground">Create your account</p>
         </div>
 

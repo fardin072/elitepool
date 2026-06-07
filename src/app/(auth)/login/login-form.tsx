@@ -15,9 +15,9 @@ import { Separator } from "@/components/ui/separator";
 import { loginSchema, type LoginInput } from "@/lib/validations";
 
 const DEMO_ACCOUNTS = [
-  { label: "Admin", email: "admin@elitepool.dev", role: "Full access" },
-  { label: "Project Manager", email: "pm@elitepool.dev", role: "Manage projects" },
-  { label: "Team Member", email: "dev1@elitepool.dev", role: "Update tasks" },
+  { label: "Admin", email: "admin@fwstasks.dev", role: "Full access" },
+  { label: "Project Manager", email: "pm@fwstasks.dev", role: "Manage projects" },
+  { label: "Team Member", email: "dev1@fwstasks.dev", role: "Update tasks" },
 ];
 
 export function LoginForm() {
@@ -64,7 +64,7 @@ export function LoginForm() {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary">
             <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">ElitePool</h1>
+          <h1 className="text-2xl font-bold tracking-tight">fwsTasks</h1>
           <p className="text-sm text-muted-foreground">Sign in to your workspace</p>
         </div>
 
