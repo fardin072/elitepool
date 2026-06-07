@@ -29,6 +29,7 @@ declare module "next-auth/jwt" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   // No adapter — Credentials provider requires JWT strategy.
   // Sessions are tracked in the Session table manually for revocation.
   session: {
