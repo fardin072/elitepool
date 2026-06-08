@@ -2,9 +2,10 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle } from "lucide-react";
+import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { useUIStore } from "@/store/useUIStore";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
@@ -29,10 +30,21 @@ export function TopNav() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const { setMobileSidebarOpen } = useUIStore();
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-6 backdrop-blur-sm">
-      <CommandPalette />
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-4 lg:px-6 backdrop-blur-sm">
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileSidebarOpen(true)}
+          className="h-9 w-9 rounded-lg lg:hidden"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+        <CommandPalette />
+      </div>
 
       <div className="flex items-center gap-1">
         {/* Theme toggle */}

@@ -6,7 +6,8 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sparkles, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,9 +62,7 @@ export function LoginForm() {
       <div className="w-full max-w-sm space-y-6">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
-          </div>
+          <Image src="/logo.png" alt="ElitePool" width={48} height={48} className="rounded-2xl" />
           <h1 className="text-2xl font-bold tracking-tight">fwsTasks</h1>
           <p className="text-sm text-muted-foreground">Sign in to your workspace</p>
         </div>
