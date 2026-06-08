@@ -50,9 +50,11 @@ export function Sidebar() {
       )}>
         {/* Logo */}
         <Link href="/" className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="fwsTasks" width={36} height={36} className="object-contain" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl gradient-brand shadow-lg shadow-violet-500/20">
+            <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 7v5c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V7l-8-5z" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
           {(sidebarOpen || mobileMenuOpen) && (
             <span className="text-base font-bold tracking-tight">
