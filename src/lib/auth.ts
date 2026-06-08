@@ -30,6 +30,7 @@ declare module "next-auth/jwt" {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  basePath: "/api/auth",
   // No adapter — Credentials provider requires JWT strategy.
   // Sessions are tracked in the Session table manually for revocation.
   session: {
@@ -108,16 +109,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
+        if (!parsed.success) {
+          console.error("[auth] Schema validation failed:", parsed.error.errors);
+          return null;
+        }
 
         const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
+        if (!user) {
+          console.error("[auth] User not found:", email);
+          return null;
+        }
 
         const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
+        if (!valid) {
+          console.error("[auth] Password invalid for user:", email);
+          return null;
+        }
 
+        console.log("[auth] Login successful for:", email);
         return {
           id:    user.id,
           name:  user.name,
