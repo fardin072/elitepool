@@ -47,15 +47,25 @@ export async function POST(req: Request) {
     responseChecksumValidation: "WHEN_REQUIRED",
   });
 
+  if (!process.env.S3_BUCKET_NAME || !process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    return NextResponse.json({ error: "Storage is not configured on the server" }, { status: 503 });
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  await s3.send(new PutObjectCommand({
-    Bucket: process.env.S3_BUCKET_NAME,
-    Key: s3Key,
-    Body: buffer,
-    ContentType: file.type,
-    ContentLength: file.size,
-  }));
+  try {
+    await s3.send(new PutObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: s3Key,
+      Body: buffer,
+      ContentType: file.type,
+      ContentLength: file.size,
+    }));
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "S3 upload failed";
+    console.error("[upload] S3 error:", message);
+    return NextResponse.json({ error: `Upload failed: ${message}` }, { status: 500 });
+  }
 
   return NextResponse.json({
     s3Key,
