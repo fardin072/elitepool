@@ -142,8 +142,8 @@ export function TasksClient({ projectId }: { projectId?: string }) {
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden">
-          <Table>
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <Table className="min-w-160">
             <TableHeader>
               <TableRow>
                 <TableHead>Task</TableHead>
