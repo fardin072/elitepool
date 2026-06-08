@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
+    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
           attribute="class"

@@ -30,7 +30,6 @@ declare module "next-auth/jwt" {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  basePath: "/api/auth",
   // No adapter — Credentials provider requires JWT strategy.
   // Sessions are tracked in the Session table manually for revocation.
   session: {
@@ -43,12 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error:  "/login",
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
-      // Handle explicit session update (e.g., logout)
-      if (trigger === "update") {
-        return null as unknown as typeof token;
-      }
-
+    async jwt({ token, user }) {
       if (user?.id) {
         // First sign-in: write id + role into token and create a Session row.
         token.id   = user.id;
@@ -68,21 +62,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      // If token is null, session is invalid (logged out)
-      if (!token || !token.sessionId) {
-        return null as unknown as typeof session;
-      }
-
       // Validate the Session row still exists — enables instant revocation.
-      const dbSession = await prisma.session.findUnique({
-        where: { sessionToken: token.sessionId },
-        select: { expires: true },
-      });
-      if (!dbSession || dbSession.expires < new Date()) {
-        // Row deleted or expired: treat as unauthenticated.
-        return null as unknown as typeof session;
+      if (token.sessionId) {
+        const dbSession = await prisma.session.findUnique({
+          where: { sessionToken: token.sessionId },
+          select: { expires: true },
+        });
+        if (!dbSession || dbSession.expires < new Date()) {
+          // Row deleted or expired: treat as unauthenticated.
+          return null as unknown as typeof session;
+        }
       }
-
       session.user.id   = token.id;
       session.user.role = token.role;
       return session;
@@ -109,26 +99,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) {
-          console.error("[auth] Schema validation failed:", parsed.error.errors);
-          return null;
-        }
+        if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-          console.error("[auth] User not found:", email);
-          return null;
-        }
+        if (!user) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) {
-          console.error("[auth] Password invalid for user:", email);
-          return null;
-        }
+        if (!valid) return null;
 
-        console.log("[auth] Login successful for:", email);
         return {
           id:    user.id,
           name:  user.name,
