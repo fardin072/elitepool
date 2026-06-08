@@ -20,13 +20,7 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-    role: Role;
-    sessionId?: string;
-  }
-}
+// next-auth/jwt subpath types unavailable in this beta — use casting in callbacks
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -43,10 +37,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
+      const t = token as typeof token & { id: string; role: Role; sessionId?: string };
       if (user?.id) {
         // First sign-in: write id + role into token and create a Session row.
-        token.id   = user.id;
-        token.role = user.role;
+        t.id   = user.id;
+        t.role = user.role;
 
         try {
           const sessionToken = crypto.randomUUID();
@@ -57,20 +52,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             },
           });
-          token.sessionId = sessionToken;
+          t.sessionId = sessionToken;
         } catch (err) {
           console.error("[auth] Failed to create Session row:", err);
         }
       }
-      return token;
+      return t;
     },
 
     async session({ session, token }) {
+      const t = token as typeof token & { id: string; role: Role; sessionId?: string };
       // Validate the Session row still exists — enables instant revocation.
-      if (token.sessionId) {
+      if (t.sessionId) {
         try {
           const dbSession = await prisma.session.findUnique({
-            where: { sessionToken: token.sessionId },
+            where: { sessionToken: t.sessionId },
             select: { expires: true },
           });
           if (!dbSession || dbSession.expires < new Date()) {
@@ -81,15 +77,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           console.error("[auth] Session DB check failed:", err);
         }
       }
-      session.user.id   = token.id;
-      session.user.role = token.role;
+      session.user.id   = t.id;
+      session.user.role = t.role;
       return session;
     },
   },
 
   events: {
     // Delete the Session row when the user signs out.
-    async signOut(message) {
+    async signOut(message: unknown) {
       const token = (message as { token?: { sessionId?: string } }).token;
       if (token?.sessionId) {
         await prisma.session.deleteMany({
