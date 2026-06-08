@@ -2,11 +2,10 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle, Menu } from "lucide-react";
+import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useUIStore } from "@/store/useUIStore";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -30,21 +29,10 @@ export function TopNav() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const { toggleSidebar } = useUIStore();
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-4 md:px-6 backdrop-blur-sm">
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="h-9 w-9 rounded-lg md:hidden"
-        >
-          <Menu className="h-4 w-4" />
-        </Button>
-        <CommandPalette />
-      </div>
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-6 backdrop-blur-sm">
+      <CommandPalette />
 
       <div className="flex items-center gap-1">
         {/* Theme toggle */}
