@@ -178,7 +178,7 @@ export function DashboardClient() {
                   <p className="text-xs text-muted-foreground">{task.project.name}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  <Badge className={`text-[10px] px-1.5 ${PRIORITY_COLOR[task.priority]}`} variant="secondary">{task.priority}</Badge>
+                  <Badge className={`text-[10px] px-1.5 ${PRIORITY_COLOR[task.priority]}`} variant="secondary">{{ HIGH: "High", MEDIUM: "Medium", LOW: "Low" }[task.priority] ?? task.priority}</Badge>
                   <span className={cn("text-xs tabular-nums", isOverdue(task.dueDate) ? "text-destructive" : "text-muted-foreground")}>
                     {formatDate(task.dueDate)}
                   </span>

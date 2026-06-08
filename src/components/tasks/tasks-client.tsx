@@ -32,6 +32,10 @@ const PRIORITY_COLORS: Record<string, string> = {
   LOW: "bg-green-500/15 text-green-600 dark:text-green-400",
 };
 
+const PRIORITY_LABELS: Record<string, string> = {
+  HIGH: "High", MEDIUM: "Medium", LOW: "Low",
+};
+
 type TaskRow = {
   id: string;
   title: string;
@@ -131,7 +135,11 @@ export function TasksClient({ projectId }: { projectId?: string }) {
           </SelectContent>
         </Select>
         <Select value={sort} onValueChange={(v) => setSort(v ?? "updated_desc")}>
-          <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-44">
+            <SelectValue>
+              {{ updated_desc: "Recently Updated", created_desc: "Latest Created", deadline_asc: "Nearest Deadline", priority_desc: "Highest Priority" }[sort]}
+            </SelectValue>
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="updated_desc">Recently Updated</SelectItem>
             <SelectItem value="created_desc">Latest Created</SelectItem>
@@ -201,7 +209,7 @@ export function TasksClient({ projectId }: { projectId?: string }) {
                   </TableCell>
                   <TableCell>
                     <Badge className={`text-xs ${PRIORITY_COLORS[task.priority]}`} variant="secondary">
-                      {task.priority}
+                      {PRIORITY_LABELS[task.priority] ?? task.priority}
                     </Badge>
                   </TableCell>
                   <TableCell>
