@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,7 +61,8 @@ export function LoginForm() {
       <div className="w-full max-w-sm space-y-6">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
-          <Image src="/logo.png" alt="fwsTasks" width={48} height={48} className="rounded-2xl" priority />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="fwsTasks" width={48} height={48} className="rounded-2xl" />
           <h1 className="text-2xl font-bold tracking-tight">fwsTasks</h1>
           <p className="text-sm text-muted-foreground">Sign in to your workspace</p>
         </div>

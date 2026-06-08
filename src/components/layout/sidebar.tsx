@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
@@ -52,7 +51,8 @@ export function Sidebar() {
         {/* Logo */}
         <Link href="/" className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden">
-            <Image src="/logo.png" alt="fwsTasks" width={36} height={36} className="object-contain" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="fwsTasks" width={36} height={36} className="object-contain" />
           </div>
           {(sidebarOpen || mobileMenuOpen) && (
             <span className="text-base font-bold tracking-tight">
