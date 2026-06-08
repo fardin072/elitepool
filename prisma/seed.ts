@@ -13,7 +13,7 @@ async function main() {
     where: { email: "admin@fwstasks.dev" },
     update: {},
     create: {
-      name: "রহিম আহমেদ",
+      name: "Rahim Ahmed",
       email: "admin@fwstasks.dev",
       passwordHash: password,
       role: Role.ADMIN,
@@ -24,7 +24,7 @@ async function main() {
     where: { email: "pm@fwstasks.dev" },
     update: {},
     create: {
-      name: "ফাতিমা খান",
+      name: "Fatima Khan",
       email: "pm@fwstasks.dev",
       passwordHash: password,
       role: Role.PROJECT_MANAGER,
@@ -35,7 +35,7 @@ async function main() {
     where: { email: "dev1@fwstasks.dev" },
     update: {},
     create: {
-      name: "করিম সরকার",
+      name: "Karim Sarkar",
       email: "dev1@fwstasks.dev",
       passwordHash: password,
       role: Role.TEAM_MEMBER,
@@ -46,7 +46,7 @@ async function main() {
     where: { email: "dev2@fwstasks.dev" },
     update: {},
     create: {
-      name: "নাজমা বেগম",
+      name: "Nazma Begum",
       email: "dev2@fwstasks.dev",
       passwordHash: password,
       role: Role.TEAM_MEMBER,
@@ -61,8 +61,8 @@ async function main() {
     update: {},
     create: {
       id: "seed-project-1",
-      name: "ঢাকা ওয়েব প্ল্যাটফর্ম",
-      description: "নতুন সহযোগিতা বৈশিষ্ট্য এবং উন্নত কর্মক্ষমতা সহ মূল প্ল্যাটফর্ম পুনর্নির্মাণ।",
+      name: "Dhaka Web Platform",
+      description: "Complete redesign of the core platform with new collaboration features and improved performance for Bangladesh market.",
       deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       status: ProjectStatus.ACTIVE,
       ownerId: pm.id,
@@ -85,8 +85,8 @@ async function main() {
     update: {},
     create: {
       id: "seed-project-2",
-      name: "মোবাইল অ্যাপ লঞ্চ",
-      description: "ওয়েব প্ল্যাটফর্মের সমান বৈশিষ্ট্য সহ iOS এবং Android অ্যাপ রিলিজ।",
+      name: "Bangladesh Mobile App Launch",
+      description: "iOS and Android app release with feature parity to the web platform for users across Bangladesh.",
       deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 days from now
       status: ProjectStatus.ACTIVE,
       ownerId: admin.id,
@@ -108,8 +108,8 @@ async function main() {
     update: {},
     create: {
       id: "seed-project-3",
-      name: "প্রথম ত্রৈমাসিক API পুনর্গঠন",
-      description: "সমস্ত উত্তরাধিকার API এন্ডপয়েন্টগুলি RESTful মান এবং সঠিক যাচাইকরণের সাথে পুনর্গঠন করা হয়েছে।",
+      name: "Q1 API Refactor",
+      description: "Refactored all legacy API endpoints to RESTful standards with proper validation and Bangladesh-specific localizations.",
       status: ProjectStatus.COMPLETED,
       ownerId: admin.id,
     },
@@ -129,8 +129,8 @@ async function main() {
   const tasks = [
     {
       id: "task-1",
-      title: "নতুন ড্যাশবোর্ড লেআউট ডিজাইন করুন",
-      description: "সংস্কারিত ড্যাশবোর্ডের জন্য ওয়্যারফ্রেম এবং উচ্চ-বিশ্বস্ততা মকআপ তৈরি করুন।",
+      title: "Design Dashboard for Bangladesh Users",
+      description: "Create wireframes and high-fidelity mockups optimized for mobile users in Bangladesh with local payment integration.",
       projectId: project1.id,
       assigneeId: member2.id,
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -139,8 +139,8 @@ async function main() {
     },
     {
       id: "task-2",
-      title: "প্রমাণীকরণ সিস্টেম প্রয়োগ করুন",
-      description: "ভূমিকা-ভিত্তিক অ্যাক্সেস নিয়ন্ত্রণ এবং ডেমো লগইন সহায়তা সহ NextAuth.js।",
+      title: "Implement Authentication System",
+      description: "NextAuth.js with role-based access control and support for Bangladesh mobile verification.",
       projectId: project1.id,
       assigneeId: member1.id,
       dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
@@ -149,8 +149,8 @@ async function main() {
     },
     {
       id: "task-3",
-      title: "CI/CD পাইপলাইন সেট আপ করুন",
-      description: "স্বয়ংক্রিয় পরীক্ষা এবং স্থাপনার জন্য GitHub Actions ওয়ার্কফ্লো।",
+      title: "Setup CI/CD Pipeline on AWS Bangladesh Region",
+      description: "GitHub Actions workflow for automated testing and deployment to AWS Asia Pacific region.",
       projectId: project1.id,
       assigneeId: member1.id,
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
@@ -159,8 +159,8 @@ async function main() {
     },
     {
       id: "task-4",
-      title: "API ডকুমেন্টেশন লিখুন",
-      description: "অনুরোধ/প্রতিক্রিয়া উদাহরণ সহ সমস্ত REST এন্ডপয়েন্ট নথিভুক্ত করুন।",
+      title: "Write API Documentation",
+      description: "Document all REST endpoints with examples for Bangladesh-specific features like BDT payments and Bangla language support.",
       projectId: project1.id,
       assigneeId: null,
       dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
@@ -169,8 +169,8 @@ async function main() {
     },
     {
       id: "task-5",
-      title: "পারফরম্যান্স অডিট এবং অপ্টিমাইজেশান",
-      description: "Lighthouse অডিট চালান, Core Web Vitals সমস্যা ঠিক করুন।",
+      title: "Performance Audit and Optimization",
+      description: "Run Lighthouse audits, optimize for slow networks common in Bangladesh, fix Core Web Vitals issues.",
       projectId: project1.id,
       assigneeId: member2.id,
       dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
@@ -191,8 +191,8 @@ async function main() {
   const tasks2 = [
     {
       id: "task-6",
-      title: "React Native প্রকল্প সেট আপ করুন",
-      description: "নেভিগেশন এবং স্টেট ম্যানেজমেন্ট সহ Expo প্রকল্প শুরু করুন।",
+      title: "Setup React Native Project for Bangladesh",
+      description: "Initialize Expo project with navigation and state management for Android-first audience in Bangladesh.",
       projectId: project2.id,
       assigneeId: member1.id,
       dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
@@ -201,7 +201,8 @@ async function main() {
     },
     {
       id: "task-7",
-      title: "অনবোর্ডিং স্ক্রিন ডিজাইন করুন",
+      title: "Design Onboarding Screens with Bangla Support",
+      description: "Create user-friendly onboarding screens with Bangla language and local payment methods.",
       projectId: project2.id,
       assigneeId: member2.id,
       dueDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000),
@@ -227,7 +228,7 @@ async function main() {
       {
         id: "activity-1",
         userId: pm.id,
-        action: "প্রকল্প তৈরি করেছে",
+        action: "created project",
         entityType: "project",
         entityId: project1.id,
         entityName: project1.name,
@@ -236,25 +237,25 @@ async function main() {
       {
         id: "activity-2",
         userId: member1.id,
-        action: "কাজ সম্পন্ন করেছে",
+        action: "completed task",
         entityType: "task",
         entityId: "task-2",
-        entityName: "প্রমাণীকরণ সিস্টেম প্রয়োগ করুন",
+        entityName: "Implement Authentication System",
         projectId: project1.id,
       },
       {
         id: "activity-3",
         userId: member2.id,
-        action: "কাজ শুরু করেছে",
+        action: "started task",
         entityType: "task",
         entityId: "task-1",
-        entityName: "নতুন ড্যাশবোর্ড লেআউট ডিজাইন করুন",
+        entityName: "Design Dashboard for Bangladesh Users",
         projectId: project1.id,
       },
       {
         id: "activity-4",
         userId: admin.id,
-        action: "প্রকল্প তৈরি করেছে",
+        action: "created project",
         entityType: "project",
         entityId: project2.id,
         entityName: project2.name,
@@ -263,10 +264,10 @@ async function main() {
       {
         id: "activity-5",
         userId: member1.id,
-        action: "কাজ শুরু করেছে",
+        action: "started task",
         entityType: "task",
         entityId: "task-6",
-        entityName: "React Native প্রকল্প সেট আপ করুন",
+        entityName: "Setup React Native Project for Bangladesh",
         projectId: project2.id,
       },
     ],
