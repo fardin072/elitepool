@@ -10,6 +10,7 @@ export async function proxy(req: NextRequest) {
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
+  // If token is null or invalid (user logged out), treat as unauthenticated
   if (!token && !isPublic) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
@@ -17,6 +18,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // If user is authenticated and tries to access auth pages, redirect to dashboard
   if (token && (pathname === "/login" || pathname === "/signup")) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
