@@ -108,7 +108,9 @@ export default function SignupPage() {
                   onValueChange={(v) => setValue("role", v as SignupInput["role"])}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue>
+                      {({ ADMIN: "Admin", PROJECT_MANAGER: "Project Manager", TEAM_MEMBER: "Team Member" } as Record<string, string>)[watch("role") ?? ""] ?? "Select role"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ADMIN">Admin</SelectItem>

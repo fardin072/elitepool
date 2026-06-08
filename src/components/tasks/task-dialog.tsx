@@ -103,7 +103,9 @@ export function TaskDialog({ open, onClose, task, projectId }: Props) {
                 value={watch("priority")}
                 onValueChange={(v) => v && setValue("priority", v as "HIGH" | "MEDIUM" | "LOW")}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>{{ HIGH: "High", MEDIUM: "Medium", LOW: "Low" }[watch("priority") ?? ""]}</SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="HIGH">High</SelectItem>
                   <SelectItem value="MEDIUM">Medium</SelectItem>
@@ -117,7 +119,9 @@ export function TaskDialog({ open, onClose, task, projectId }: Props) {
                 value={watch("status")}
                 onValueChange={(v) => v && setValue("status", v as "TODO" | "IN_PROGRESS" | "COMPLETED")}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue>{{ TODO: "To Do", IN_PROGRESS: "In Progress", COMPLETED: "Completed" }[watch("status") ?? ""]}</SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="TODO">To Do</SelectItem>
                   <SelectItem value="IN_PROGRESS">In Progress</SelectItem>

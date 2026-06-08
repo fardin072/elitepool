@@ -87,7 +87,9 @@ export function ProjectsClient() {
         </div>
         <Select value={status} onValueChange={(v) => setStatus(v ?? "ALL")}>
           <SelectTrigger className="w-36">
-            <SelectValue />
+            <SelectValue>
+              {{ ALL: "All Status", ACTIVE: "Active", COMPLETED: "Completed", ON_HOLD: "On Hold" }[status]}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Status</SelectItem>

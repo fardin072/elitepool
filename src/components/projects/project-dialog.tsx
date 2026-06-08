@@ -97,7 +97,7 @@ export function ProjectDialog({ open, onClose, project }: Props) {
                 onValueChange={(v) => v && setValue("status", v as "ACTIVE" | "COMPLETED" | "ON_HOLD")}
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue>{{ ACTIVE: "Active", COMPLETED: "Completed", ON_HOLD: "On Hold" }[watch("status") ?? ""]}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ACTIVE">Active</SelectItem>

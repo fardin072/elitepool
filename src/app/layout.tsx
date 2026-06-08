@@ -23,7 +23,9 @@ export const metadata: Metadata = {
   description:
     "Smart project and task collaboration system for teams. Manage projects, tasks, deadlines, and team workload with ease.",
   icons: {
-    icon: "/logo.png",
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    shortcut: "/icon.png",
+    apple: "/icon.png",
   },
 };
 

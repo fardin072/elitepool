@@ -105,7 +105,11 @@ export function TasksClient({ projectId }: { projectId?: string }) {
           />
         </div>
         <Select value={status} onValueChange={(v) => setStatus(v ?? "ALL")}>
-          <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-36">
+            <SelectValue>
+              {{ ALL: "All Status", TODO: "To Do", IN_PROGRESS: "In Progress", COMPLETED: "Completed" }[status]}
+            </SelectValue>
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Status</SelectItem>
             <SelectItem value="TODO">To Do</SelectItem>
@@ -114,7 +118,11 @@ export function TasksClient({ projectId }: { projectId?: string }) {
           </SelectContent>
         </Select>
         <Select value={priority} onValueChange={(v) => setPriority(v ?? "ALL")}>
-          <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-32">
+            <SelectValue>
+              {{ ALL: "All Priority", HIGH: "High", MEDIUM: "Medium", LOW: "Low" }[priority]}
+            </SelectValue>
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Priority</SelectItem>
             <SelectItem value="HIGH">High</SelectItem>
@@ -204,7 +212,7 @@ export function TasksClient({ projectId }: { projectId?: string }) {
                       <SelectTrigger className="h-7 w-32 text-xs">
                         <SelectValue>
                           <Badge className={`text-xs ${STATUS_COLORS[task.status]}`} variant="secondary">
-                            {task.status.replace("_", " ")}
+                            {{ TODO: "To Do", IN_PROGRESS: "In Progress", COMPLETED: "Completed" }[task.status]}
                           </Badge>
                         </SelectValue>
                       </SelectTrigger>
