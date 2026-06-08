@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard, FolderKanban, CheckSquare,
-  Users, BarChart3, ChevronLeft, Settings,
+  Users, BarChart3, ChevronLeft, Settings, LogOut, UserCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/useUIStore";
@@ -27,73 +27,52 @@ const navItems = [
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
-function NavContent({ expanded, onNavigate }: { expanded: boolean; onNavigate?: () => void }) {
+function NavLinks({ expanded, onNavigate }: { expanded: boolean; onNavigate?: () => void }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
 
   return (
-    <>
-      <ScrollArea className="flex-1 py-3">
-        <nav className="flex flex-col gap-0.5 px-2">
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
-            return (
-              <Link key={href} href={href} onClick={onNavigate}>
-                <span className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                  active
-                    ? "nav-active-glow text-primary"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                )}>
-                  <Icon className={cn("h-4 w-4 shrink-0", active && "text-primary")} />
-                  {expanded && <span>{label}</span>}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
+    <ScrollArea className="flex-1 py-3">
+      <nav className="flex flex-col gap-0.5 px-2">
+        {navItems.map(({ href, label, icon: Icon }) => {
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          return (
+            <Link key={href} href={href} onClick={onNavigate}>
+              <span className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                active
+                  ? "nav-active-glow text-primary"
+                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              )}>
+                <Icon className={cn("h-4 w-4 shrink-0", active && "text-primary")} />
+                {expanded && <span>{label}</span>}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
 
-        <div className="mx-4 my-3 h-px bg-sidebar-border" />
+      <div className="mx-4 my-3 h-px bg-sidebar-border" />
 
-        <nav className="flex flex-col gap-0.5 px-2">
-          <Link href="/settings" onClick={onNavigate}>
-            <span className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-              pathname.startsWith("/settings")
-                ? "nav-active-glow text-primary"
-                : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
-            )}>
-              <Settings className={cn("h-4 w-4 shrink-0", pathname.startsWith("/settings") && "text-primary")} />
-              {expanded && <span>Settings</span>}
-            </span>
-          </Link>
-        </nav>
-      </ScrollArea>
-
-      <div className="border-t border-sidebar-border p-2">
-        <Link href="/profile" onClick={onNavigate}>
-          <div className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-150 hover:bg-sidebar-accent cursor-pointer",
-            pathname === "/profile" && "nav-active-glow"
+      <nav className="flex flex-col gap-0.5 px-2">
+        <Link href="/settings" onClick={onNavigate}>
+          <span className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+            pathname.startsWith("/settings")
+              ? "nav-active-glow text-primary"
+              : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
           )}>
-            {expanded && (
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-sidebar-foreground leading-none">
-                  {session?.user?.name ?? "…"}
-                </p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                  {ROLE_SHORT[session?.user?.role ?? ""] ?? "Member"}
-                </p>
-              </div>
-            )}
-          </div>
+            <Settings className={cn("h-4 w-4 shrink-0", pathname.startsWith("/settings") && "text-primary")} />
+            {expanded && <span>Settings</span>}
+          </span>
         </Link>
-      </div>
-    </>
+      </nav>
+    </ScrollArea>
   );
 }
 
 export function Sidebar() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
   const { sidebarOpen, toggleSidebar, mobileSidebarOpen, setMobileSidebarOpen } = useUIStore();
 
   return (
@@ -104,13 +83,7 @@ export function Sidebar() {
         sidebarOpen ? "w-60" : "w-16"
       )}>
         <Link href="/" className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0">
-          <Image
-            src="/logo.png"
-            alt="ElitePool"
-            width={36}
-            height={36}
-            className="shrink-0 rounded-xl"
-          />
+          <Image src="/logo.png" alt="ElitePool" width={36} height={36} className="shrink-0 rounded-xl" />
           {sidebarOpen && (
             <span className="text-base font-bold tracking-tight">
               <span className="gradient-text">fws</span>
@@ -119,14 +92,35 @@ export function Sidebar() {
           )}
         </Link>
 
-        <NavContent expanded={sidebarOpen} />
+        <NavLinks expanded={sidebarOpen} />
 
-        <button
-          onClick={toggleSidebar}
-          className="flex w-full items-center justify-center rounded-lg p-1.5 mx-0 mb-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
-        >
-          <ChevronLeft className={cn("h-3.5 w-3.5 transition-transform duration-300", !sidebarOpen && "rotate-180")} />
-        </button>
+        {/* Desktop footer */}
+        <div className="border-t border-sidebar-border p-2">
+          <Link href="/profile">
+            <div className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-150 hover:bg-sidebar-accent cursor-pointer",
+              pathname === "/profile" && "nav-active-glow"
+            )}>
+              {sidebarOpen && (
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-sidebar-foreground leading-none">
+                    {session?.user?.name ?? "…"}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                    {ROLE_SHORT[session?.user?.role ?? ""] ?? "Member"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </Link>
+
+          <button
+            onClick={toggleSidebar}
+            className="mt-1 flex w-full items-center justify-center rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          >
+            <ChevronLeft className={cn("h-3.5 w-3.5 transition-transform duration-300", !sidebarOpen && "rotate-180")} />
+          </button>
+        </div>
       </aside>
 
       {/* Mobile sidebar — Sheet drawer */}
@@ -136,25 +130,51 @@ export function Sidebar() {
           showCloseButton={false}
           className="p-0 sidebar-gradient border-sidebar-border flex flex-col"
         >
+          {/* Logo */}
           <Link
             href="/"
             onClick={() => setMobileSidebarOpen(false)}
             className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0"
           >
-            <Image
-              src="/logo.png"
-              alt="ElitePool"
-              width={36}
-              height={36}
-              className="shrink-0 rounded-xl"
-            />
+            <Image src="/logo.png" alt="ElitePool" width={36} height={36} className="shrink-0 rounded-xl" />
             <span className="text-base font-bold tracking-tight">
               <span className="gradient-text">fws</span>
               <span className="text-sidebar-foreground">Tasks</span>
             </span>
           </Link>
 
-          <NavContent expanded onNavigate={() => setMobileSidebarOpen(false)} />
+          {/* Nav links */}
+          <NavLinks expanded onNavigate={() => setMobileSidebarOpen(false)} />
+
+          {/* Mobile footer — user info + profile + logout */}
+          <div className="border-t border-sidebar-border p-3 space-y-0.5">
+            <Link
+              href="/profile"
+              onClick={() => setMobileSidebarOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-sidebar-accent",
+                pathname === "/profile" && "nav-active-glow"
+              )}
+            >
+              <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-sidebar-foreground leading-none">
+                  {session?.user?.name ?? "…"}
+                </p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                  {session?.user?.email ?? ""}
+                </p>
+              </div>
+            </Link>
+
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4 shrink-0" />
+              <span>Sign out</span>
+            </button>
+          </div>
         </SheetContent>
       </Sheet>
     </>
