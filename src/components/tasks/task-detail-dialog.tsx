@@ -101,20 +101,19 @@ export function TaskDetailDialog({ taskId, onClose, onEdit }: Props) {
     setIsUploading(true);
     setUploadingName(file.name);
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size, taskId }),
-      });
-      if (!res.ok) { toast.error((await res.json()).error ?? "Upload failed"); return; }
-      const { uploadUrl, s3Key } = await res.json();
+      // Upload via server proxy — avoids S3 CORS entirely
+      const form = new FormData();
+      form.append("file", file);
+      form.append("taskId", taskId);
 
-      await fetch(uploadUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      if (!res.ok) { toast.error((await res.json()).error ?? "Upload failed"); return; }
+      const { s3Key, name, size, mimeType } = await res.json();
 
       const record = await fetch(`/api/tasks/${taskId}/attachments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ s3Key, name: file.name, size: file.size, mimeType: file.type }),
+        body: JSON.stringify({ s3Key, name, size, mimeType }),
       });
       if (!record.ok) { toast.error("Failed to record attachment"); return; }
 

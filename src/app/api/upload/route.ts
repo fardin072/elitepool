@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const ALLOWED_TYPES = [
   "image/jpeg", "image/png", "image/gif", "image/webp",
@@ -20,20 +19,23 @@ export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json().catch(() => null);
-  const { filename, contentType, size, taskId } = body ?? {};
+  const formData = await req.formData().catch(() => null);
+  if (!formData) return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
 
-  if (!filename || !contentType || !size || !taskId) {
-    return NextResponse.json({ error: "filename, contentType, size, taskId are required" }, { status: 400 });
+  const file = formData.get("file") as File | null;
+  const taskId = formData.get("taskId") as string | null;
+
+  if (!file || !taskId) {
+    return NextResponse.json({ error: "file and taskId are required" }, { status: 400 });
   }
-  if (size > MAX_SIZE) {
+  if (file.size > MAX_SIZE) {
     return NextResponse.json({ error: "File size exceeds 10 MB limit" }, { status: 400 });
   }
-  if (!ALLOWED_TYPES.includes(contentType)) {
+  if (!ALLOWED_TYPES.includes(file.type)) {
     return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
   }
 
-  const s3Key = `attachments/${taskId}/${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+  const s3Key = `attachments/${taskId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
 
   const s3 = new S3Client({
     region: process.env.AWS_REGION ?? "us-east-1",
@@ -41,19 +43,24 @@ export async function POST(req: Request) {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? "",
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
     },
-    // Disable automatic checksums — prevents x-amz-checksum-crc32 headers
-    // being injected into presigned URLs, which break browser CORS preflight
     requestChecksumCalculation: "WHEN_REQUIRED",
     responseChecksumValidation: "WHEN_REQUIRED",
   });
 
-  const command = new PutObjectCommand({
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  await s3.send(new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: s3Key,
-    ContentType: contentType,
-    ContentLength: size,
-  });
+    Body: buffer,
+    ContentType: file.type,
+    ContentLength: file.size,
+  }));
 
-  const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
-  return NextResponse.json({ uploadUrl, s3Key });
+  return NextResponse.json({
+    s3Key,
+    name: file.name,
+    size: file.size,
+    mimeType: file.type,
+  });
 }
