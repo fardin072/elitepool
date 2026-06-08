@@ -41,6 +41,10 @@ export async function POST(req: Request) {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? "",
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
     },
+    // Disable automatic checksums — prevents x-amz-checksum-crc32 headers
+    // being injected into presigned URLs, which break browser CORS preflight
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
   });
 
   const command = new PutObjectCommand({
