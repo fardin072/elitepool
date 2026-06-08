@@ -48,15 +48,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id   = user.id;
         token.role = user.role;
 
-        const sessionToken = crypto.randomUUID();
-        await prisma.session.create({
-          data: {
-            sessionToken,
-            userId:  user.id,
-            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          },
-        });
-        token.sessionId = sessionToken;
+        try {
+          const sessionToken = crypto.randomUUID();
+          await prisma.session.create({
+            data: {
+              sessionToken,
+              userId:  user.id,
+              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            },
+          });
+          token.sessionId = sessionToken;
+        } catch (err) {
+          console.error("[auth] Failed to create Session row:", err);
+        }
       }
       return token;
     },
@@ -64,13 +68,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       // Validate the Session row still exists — enables instant revocation.
       if (token.sessionId) {
-        const dbSession = await prisma.session.findUnique({
-          where: { sessionToken: token.sessionId },
-          select: { expires: true },
-        });
-        if (!dbSession || dbSession.expires < new Date()) {
-          // Row deleted or expired: treat as unauthenticated.
-          return null as unknown as typeof session;
+        try {
+          const dbSession = await prisma.session.findUnique({
+            where: { sessionToken: token.sessionId },
+            select: { expires: true },
+          });
+          if (!dbSession || dbSession.expires < new Date()) {
+            // Row deleted or expired: treat as unauthenticated.
+            return null as unknown as typeof session;
+          }
+        } catch (err) {
+          console.error("[auth] Session DB check failed:", err);
         }
       }
       session.user.id   = token.id;
