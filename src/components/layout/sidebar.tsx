@@ -45,8 +45,8 @@ export function Sidebar() {
         </div>
         {sidebarOpen && (
           <span className="text-base font-bold tracking-tight">
-            <span className="gradient-text">Elite</span>
-            <span className="text-sidebar-foreground">Pool</span>
+            <span className="gradient-text">fws</span>
+            <span className="text-sidebar-foreground">Tasks</span>
           </span>
         )}
       </Link>

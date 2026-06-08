@@ -60,7 +60,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <CardTitle className="text-base">Appearance</CardTitle>
-              <CardDescription>Choose how ElitePool looks to you</CardDescription>
+              <CardDescription>Choose how fwsTasks looks to you</CardDescription>
             </div>
           </div>
         </CardHeader>
