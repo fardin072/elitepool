@@ -22,7 +22,7 @@ export const proxy = auth((req) => {
   return NextResponse.next();
 });
 
-export const proxyConfig = {
+export const config = {
   matcher: [
     // Exclude all _next/ internals (static, image, dev, turbopack chunks, etc.)
     "/((?!_next/|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
