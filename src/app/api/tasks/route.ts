@@ -14,6 +14,7 @@ export async function GET(req: Request) {
   const assigneeId = searchParams.get("assigneeId") ?? undefined;
   const search = searchParams.get("search") ?? "";
   const overdue = searchParams.get("overdue") === "true";
+  const sort = searchParams.get("sort") ?? "updated_desc";
   const page = Math.max(1, Number(searchParams.get("page") ?? 1));
   const pageSize = Math.min(50, Math.max(1, Number(searchParams.get("pageSize") ?? 20)));
 
@@ -31,22 +32,48 @@ export async function GET(req: Request) {
       status ? { status: status as "TODO" | "IN_PROGRESS" | "COMPLETED" } : {},
       priority ? { priority: priority as "HIGH" | "MEDIUM" | "LOW" } : {},
       assigneeId ? { assigneeId } : {},
-      search ? { title: { contains: search, mode: "insensitive" as const } } : {},
+      search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" as const } },
+              { description: { contains: search, mode: "insensitive" as const } },
+            ],
+          }
+        : {},
       overdue ? { dueDate: { lt: new Date() }, status: { not: "COMPLETED" as const } } : {},
     ],
   };
 
+  const include = {
+    assignee: { select: { id: true, name: true, avatar: true } },
+    project: { select: { id: true, name: true } },
+    _count: { select: { comments: true, attachments: true } },
+  };
+
+  const PRIORITY_ORDER: Record<string, number> = { HIGH: 0, MEDIUM: 1, LOW: 2 };
+
+  if (sort === "priority_desc") {
+    const all = await prisma.task.findMany({ where, include });
+    all.sort((a, b) => (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3));
+    const total = all.length;
+    const data = all.slice((page - 1) * pageSize, page * pageSize);
+    return NextResponse.json({ data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) });
+  }
+
+  const orderBy =
+    sort === "created_desc"
+      ? { createdAt: "desc" as const }
+      : sort === "deadline_asc"
+      ? [{ dueDate: "asc" as const }, { updatedAt: "desc" as const }]
+      : { updatedAt: "desc" as const };
+
   const [data, total] = await Promise.all([
     prisma.task.findMany({
       where,
-      orderBy: { updatedAt: "desc" },
+      orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      include: {
-        assignee: { select: { id: true, name: true, avatar: true } },
-        project: { select: { id: true, name: true } },
-        _count: { select: { comments: true, attachments: true } },
-      },
+      include,
     }),
     prisma.task.count({ where }),
   ]);

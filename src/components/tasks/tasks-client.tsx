@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TaskDialog } from "./task-dialog";
+import { TaskDetailDialog } from "./task-detail-dialog";
 import { formatDate, isOverdue, cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -46,16 +47,18 @@ export function TasksClient({ projectId }: { projectId?: string }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("ALL");
   const [priority, setPriority] = useState("ALL");
+  const [sort, setSort] = useState("updated_desc");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editTask, setEditTask] = useState<Record<string, unknown> | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
-  const params = new URLSearchParams({ search });
+  const params = new URLSearchParams({ search, sort });
   if (status !== "ALL") params.set("status", status);
   if (priority !== "ALL") params.set("priority", priority);
   if (projectId) params.set("projectId", projectId);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["tasks", search, status, priority, projectId],
+    queryKey: ["tasks", search, status, priority, sort, projectId],
     queryFn: () => fetch(`/api/tasks?${params}`).then((r) => r.json()),
   });
 
@@ -82,7 +85,7 @@ export function TasksClient({ projectId }: { projectId?: string }) {
   return (
     <div className="space-y-6">
       {!projectId && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
             <p className="text-sm text-muted-foreground">{data?.total ?? 0} tasks total</p>
@@ -90,12 +93,12 @@ export function TasksClient({ projectId }: { projectId?: string }) {
         </div>
       )}
 
-      {/* Filters */}
+      {/* Filters + Sort */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search tasks..."
+            placeholder="Search tasks…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -117,6 +120,15 @@ export function TasksClient({ projectId }: { projectId?: string }) {
             <SelectItem value="HIGH">High</SelectItem>
             <SelectItem value="MEDIUM">Medium</SelectItem>
             <SelectItem value="LOW">Low</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={sort} onValueChange={(v) => setSort(v ?? "updated_desc")}>
+          <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="updated_desc">Recently Updated</SelectItem>
+            <SelectItem value="created_desc">Latest Created</SelectItem>
+            <SelectItem value="deadline_asc">Nearest Deadline</SelectItem>
+            <SelectItem value="priority_desc">Highest Priority</SelectItem>
           </SelectContent>
         </Select>
         {projectId && (
@@ -159,7 +171,13 @@ export function TasksClient({ projectId }: { projectId?: string }) {
               {tasks.map((task) => (
                 <TableRow key={task.id}>
                   <TableCell className="font-medium max-w-48">
-                    <span className="line-clamp-1">{task.title}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTaskId(task.id)}
+                      className="truncate text-left hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer w-full"
+                    >
+                      {task.title}
+                    </button>
                   </TableCell>
                   {!projectId && (
                     <TableCell className="text-sm text-muted-foreground">
@@ -206,6 +224,9 @@ export function TasksClient({ projectId }: { projectId?: string }) {
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setSelectedTaskId(task.id)}>
+                          <CheckSquare className="mr-2 h-4 w-4" /> View Details
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => { setEditTask(task as unknown as Record<string, unknown>); setDialogOpen(true); }}>
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
@@ -231,6 +252,16 @@ export function TasksClient({ projectId }: { projectId?: string }) {
         onClose={() => setDialogOpen(false)}
         task={editTask}
         projectId={projectId}
+      />
+
+      <TaskDetailDialog
+        taskId={selectedTaskId}
+        onClose={() => setSelectedTaskId(null)}
+        onEdit={(task) => {
+          setSelectedTaskId(null);
+          setEditTask(task);
+          setDialogOpen(true);
+        }}
       />
     </div>
   );
