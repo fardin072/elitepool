@@ -42,7 +42,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error:  "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      // Handle explicit session update (e.g., logout)
+      if (trigger === "update") {
+        return null as unknown as typeof token;
+      }
+
       if (user?.id) {
         // First sign-in: write id + role into token and create a Session row.
         token.id   = user.id;
@@ -62,17 +67,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      // Validate the Session row still exists — enables instant revocation.
-      if (token.sessionId) {
-        const dbSession = await prisma.session.findUnique({
-          where: { sessionToken: token.sessionId },
-          select: { expires: true },
-        });
-        if (!dbSession || dbSession.expires < new Date()) {
-          // Row deleted or expired: treat as unauthenticated.
-          return null as unknown as typeof session;
-        }
+      // If token is null, session is invalid (logged out)
+      if (!token || !token.sessionId) {
+        return null as unknown as typeof session;
       }
+
+      // Validate the Session row still exists — enables instant revocation.
+      const dbSession = await prisma.session.findUnique({
+        where: { sessionToken: token.sessionId },
+        select: { expires: true },
+      });
+      if (!dbSession || dbSession.expires < new Date()) {
+        // Row deleted or expired: treat as unauthenticated.
+        return null as unknown as typeof session;
+      }
+
       session.user.id   = token.id;
       session.user.role = token.role;
       return session;

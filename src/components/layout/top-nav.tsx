@@ -99,7 +99,12 @@ export function TopNav() {
 
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  onClick={async () => {
+                    await signOut({
+                      callbackUrl: "/login",
+                      redirect: true,
+                    });
+                  }}
                   className="text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
