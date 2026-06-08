@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle, Menu } from "lucide-react";
+import { LogOut, User, Settings, Moon, Sun, ChevronDown, UserCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { CommandPalette } from "@/components/layout/command-palette";
-import { useUIStore } from "@/store/useUIStore";
 
 const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Admin",
@@ -30,22 +29,10 @@ export function TopNav() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const { toggleMobileMenu } = useUIStore();
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-3 md:px-6 backdrop-blur-sm">
-      <div className="flex items-center gap-2">
-        {/* Hamburger — mobile only */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden h-9 w-9 rounded-lg"
-          onClick={toggleMobileMenu}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
-        <CommandPalette />
-      </div>
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-background/80 px-6 backdrop-blur-sm">
+      <CommandPalette />
 
       <div className="flex items-center gap-1">
         {/* Theme toggle */}
