@@ -24,6 +24,7 @@ export const proxy = auth((req) => {
 
 export const proxyConfig = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Exclude all _next/ internals (static, image, dev, turbopack chunks, etc.)
+    "/((?!_next/|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
