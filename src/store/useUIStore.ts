@@ -8,6 +8,10 @@ interface UIStore {
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
 
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+  toggleMobileMenu: () => void;
+
   selectedTaskIds: string[];
   toggleTaskSelection: (id: string) => void;
   selectAllTasks: (ids: string[]) => void;
@@ -26,6 +30,10 @@ export const useUIStore = create<UIStore>((set) => ({
   sidebarOpen: true,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+
+  mobileMenuOpen: false,
+  setMobileMenuOpen: (open) => set({ mobileMenuOpen: open }),
+  toggleMobileMenu: () => set((s) => ({ mobileMenuOpen: !s.mobileMenuOpen })),
 
   selectedTaskIds: [],
   toggleTaskSelection: (id) =>
